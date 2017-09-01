@@ -7,18 +7,12 @@ use TestIoc\App;
 use TestIoc\Car;
 use TestIoc\Fuel;
 
-$whoops = new \Whoops\Run;
-$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-$whoops->register();
 
-//$app = new App;
-App::register('car', function() {
-    $fuel = new Fuel();
-    $car = new Car($fuel);
-    return $car;
-});
-
+App::bootWhoops();
+App::boot();
 
 $car = App::resolve('car');
+$client = App::resolve('client');
 
-dd($car->getCar());
+var_dump($car->getCar());
+var_dump($client->buy());
