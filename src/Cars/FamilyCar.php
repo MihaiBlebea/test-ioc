@@ -1,8 +1,8 @@
 <?php
 
-namespace TestIoc;
+namespace TestIoc\Cars;
 
-class Car
+class FamilyCar extends Car
 {
     public $fuel;
 
@@ -13,7 +13,6 @@ class Car
 
     public function getCar()
     {
-        //dd($this->fuel);
         return "This car uses " . $this->fuel->type . " and burns " . $this->fuel->amount . " per day.";
     }
 }

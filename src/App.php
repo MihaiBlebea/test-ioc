@@ -3,6 +3,8 @@
 namespace TestIoc;
 
 use Closure;
+use TestIoc\Engines\Engine;
+use TestIoc\Cars\SportCar;
 
 class App
 {
@@ -28,6 +30,7 @@ class App
        return array_key_exists($name, static::$registry);
     }
 
+    // End of important methods that define IOC
     public static function getRegistry()
     {
         return self::$registry;
@@ -35,9 +38,9 @@ class App
 
     public static function boot()
     {
-        self::register('car', function() {
-            $fuel = new Fuel();
-            $car = new Car($fuel);
+        self::register('sportcar', function() {
+            $engine = new Engine(1.8, 180, 'diesel');
+            $car = new SportCar($engine, 'BMW');
             return $car;
         });
 
