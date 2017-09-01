@@ -6,6 +6,11 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Framework\\App' => $baseDir . '/framework/App.php',
+    'Framework\\Car' => $baseDir . '/framework/Car.php',
+    'Framework\\Components\\RouterComponent' => $baseDir . '/framework/Components/RouterComponent.php',
+    'Framework\\InjectionContainer' => $baseDir . '/framework/InjectionContainer.php',
+    'Framework\\Interfaces\\ComponentAbstract' => $baseDir . '/framework/Interfaces/ComponentAbstract.php',
     'Psr\\Log\\AbstractLogger' => $vendorDir . '/psr/log/Psr/Log/AbstractLogger.php',
     'Psr\\Log\\InvalidArgumentException' => $vendorDir . '/psr/log/Psr/Log/InvalidArgumentException.php',
     'Psr\\Log\\LogLevel' => $vendorDir . '/psr/log/Psr/Log/LogLevel.php',
@@ -17,6 +22,9 @@ return array(
     'Psr\\Log\\Test\\DummyTest' => $vendorDir . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
     'Psr\\Log\\Test\\LoggerInterfaceTest' => $vendorDir . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
     'TestIoc\\App' => $baseDir . '/src/App.php',
+    'TestIoc\\Car' => $baseDir . '/src/Car.php',
+    'TestIoc\\Client' => $baseDir . '/src/Client.php',
+    'TestIoc\\Fuel' => $baseDir . '/src/Fuel.php',
     'Whoops\\Exception\\ErrorException' => $vendorDir . '/filp/whoops/src/Whoops/Exception/ErrorException.php',
     'Whoops\\Exception\\Formatter' => $vendorDir . '/filp/whoops/src/Whoops/Exception/Formatter.php',
     'Whoops\\Exception\\Frame' => $vendorDir . '/filp/whoops/src/Whoops/Exception/Frame.php',

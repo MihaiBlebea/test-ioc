@@ -3,16 +3,18 @@
 require_once('helpers.php');
 require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 
-use TestIoc\App;
-use TestIoc\Car;
-use TestIoc\Fuel;
+use TestIoc\Go;
+use Framework\App as Frame;
+use Framework\InjectionContainer;
 
+$frame = new Frame();
+$frame->boot();
 
-App::bootWhoops();
-App::boot();
+/*
+$inj = new InjectionContainer;
+$car = $inj->resolve('car');
+dd($car);
+*/
 
-$car = App::resolve('car');
-$client = App::resolve('client');
-
-var_dump($car->getCar());
-var_dump($client->buy());
+$go = new Go();
+$go->view();

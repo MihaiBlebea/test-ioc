@@ -12,7 +12,8 @@
     },
     "autoload": {
         "psr-4": {
-            "TestIoc\\": "src/"
+            "TestIoc\\": "src/",
+            "Framework\\": "framework/"
         }
     }
 }
