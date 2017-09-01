@@ -17,6 +17,7 @@ class SportCar extends Car
     public function __construct(Engine $engine, $brand)
     {
         $this->engine = $engine;
+        $this->brand = $brand;
     }
 
     public function run($distance)
@@ -47,6 +48,8 @@ class SportCar extends Car
 
     public function getStats()
     {
-        return "The driver uses a " . $this->brand . " with a " . $this->engine->getCapacity() . "litres engine<br /> The journey is " . $this->distance . " km. He can take " . $this->people . "</br> The price per person will be " . $this->money . ". The profit will be " . $this->profit();
+        return "The driver uses a " . $this->brand . " with a " . $this->engine->getCapacity() . " litres engine<br /> The journey is " .
+                $this->distance . " km. He can take " . $this->people . "</br> The price per person will be " . $this->money . " RON. The profit will be " .
+                $this->profit($this->people, $this->money, $this->distance, $this->fuel, "50") . " RON";
      }
 }

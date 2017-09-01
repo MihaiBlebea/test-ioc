@@ -12,8 +12,8 @@ abstract class Car
 
     abstract protected function uses();
 
-    final protected function profit()
+    final protected function profit($people, $money, $distance, $fuel, $fuelPrice)
     {
-        return ($people * $money) - ($distance * $fuel * $money);
+        return ($people * $money) - ($distance * $fuel * $fuelPrice);
     }
 }

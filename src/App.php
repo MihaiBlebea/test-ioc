@@ -41,6 +41,9 @@ class App
         self::register('sportcar', function() {
             $engine = new Engine(1.8, 180, 'diesel');
             $car = new SportCar($engine, 'BMW');
+            $car->run(1000);
+            $car->takes(3);
+            $car->charge(23);
             return $car;
         });
 
