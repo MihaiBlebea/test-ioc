@@ -58,6 +58,7 @@ class ComposerStaticInit4d49971e1822c5c5fbcdbcd9b5bd3e20
         'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/Psr/Log/NullLogger.php',
         'Psr\\Log\\Test\\DummyTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
         'Psr\\Log\\Test\\LoggerInterfaceTest' => __DIR__ . '/..' . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
+<<<<<<< HEAD
         'TestIoc\\Car' => __DIR__ . '/../..' . '/src/Car.php',
         'TestIoc\\Client' => __DIR__ . '/../..' . '/src/Client.php',
         'TestIoc\\Components\\CarComponent' => __DIR__ . '/../..' . '/src/Components/CarComponent.php',
@@ -65,6 +66,12 @@ class ComposerStaticInit4d49971e1822c5c5fbcdbcd9b5bd3e20
         'TestIoc\\Fuel' => __DIR__ . '/../..' . '/src/Fuel.php',
         'TestIoc\\Go' => __DIR__ . '/../..' . '/src/Go.php',
         'TestIoc\\House' => __DIR__ . '/../..' . '/src/House.php',
+=======
+        'TestIoc\\App' => __DIR__ . '/../..' . '/src/App.php',
+        'TestIoc\\Car' => __DIR__ . '/../..' . '/src/Car.php',
+        'TestIoc\\Client' => __DIR__ . '/../..' . '/src/Client.php',
+        'TestIoc\\Fuel' => __DIR__ . '/../..' . '/src/Fuel.php',
+>>>>>>> 494df13c875bd34822eae2d756980b611200a9f8
         'Whoops\\Exception\\ErrorException' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Exception/ErrorException.php',
         'Whoops\\Exception\\Formatter' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Exception/Formatter.php',
         'Whoops\\Exception\\Frame' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Exception/Frame.php',

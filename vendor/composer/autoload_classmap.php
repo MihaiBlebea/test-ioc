@@ -19,6 +19,7 @@ return array(
     'Psr\\Log\\NullLogger' => $vendorDir . '/psr/log/Psr/Log/NullLogger.php',
     'Psr\\Log\\Test\\DummyTest' => $vendorDir . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
     'Psr\\Log\\Test\\LoggerInterfaceTest' => $vendorDir . '/psr/log/Psr/Log/Test/LoggerInterfaceTest.php',
+<<<<<<< HEAD
     'TestIoc\\Car' => $baseDir . '/src/Car.php',
     'TestIoc\\Client' => $baseDir . '/src/Client.php',
     'TestIoc\\Components\\CarComponent' => $baseDir . '/src/Components/CarComponent.php',
@@ -26,6 +27,12 @@ return array(
     'TestIoc\\Fuel' => $baseDir . '/src/Fuel.php',
     'TestIoc\\Go' => $baseDir . '/src/Go.php',
     'TestIoc\\House' => $baseDir . '/src/House.php',
+=======
+    'TestIoc\\App' => $baseDir . '/src/App.php',
+    'TestIoc\\Car' => $baseDir . '/src/Car.php',
+    'TestIoc\\Client' => $baseDir . '/src/Client.php',
+    'TestIoc\\Fuel' => $baseDir . '/src/Fuel.php',
+>>>>>>> 494df13c875bd34822eae2d756980b611200a9f8
     'Whoops\\Exception\\ErrorException' => $vendorDir . '/filp/whoops/src/Whoops/Exception/ErrorException.php',
     'Whoops\\Exception\\Formatter' => $vendorDir . '/filp/whoops/src/Whoops/Exception/Formatter.php',
     'Whoops\\Exception\\Frame' => $vendorDir . '/filp/whoops/src/Whoops/Exception/Frame.php',
