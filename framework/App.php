@@ -6,7 +6,7 @@ use Framework\Injectables\Injector;
 
 class App
 {
-    private $config = array();
+    public $config = array();
 
     private $booted = false;
 
@@ -38,6 +38,12 @@ class App
             $component = new $namespace();
             $component->run($instance);
         }
+    }
+
+    public function autoloadFacades()
+    {
+
+
     }
 
     public function testApp()

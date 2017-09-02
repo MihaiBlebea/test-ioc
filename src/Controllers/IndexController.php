@@ -5,14 +5,12 @@ namespace TestIoc\Controllers;
 use Framework\Injectables\Injector;
 use Framework\Facades\RouterFacade;
 use Framework\Facades\LoginFacade;
+use TestIoc\Models\User;
 
 class IndexController
 {
     public function index()
     {
-        $car = Injector::resolve("Car");
-        var_dump($car);
-
         $house = Injector::resolve("House");
         echo $house->address;
     }
@@ -29,6 +27,16 @@ class IndexController
         //$router = Injector::resolve("Router");
         //return $router->goTo(["controller" => "Index", "action" => "index"]);
         //RouterFacade::goTo(["controller" => "Index", "action" => "index"]);
-        dd(LoginFacade::isLogin());
+        //dd(LoginFacade::isLogin());
+
+        LoginC::gethere();
+    }
+
+    public function pdo()
+    {
+        $user = new User();
+        //$user = $user->select();
+        $users = $user->selectAll();
+        dd($users);
     }
 }

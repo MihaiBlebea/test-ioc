@@ -1,17 +1,5 @@
 <?php
 
-spl_autoload_register("FacadeLoad");
-
-function FacadeLoad($class)
-{
-    if($class == "Taranpula")
-    {
-        echo $class;
-        include 'classes/' . $class . '.class.php';
-    }
-}
-
-
 // Die and dump function
 function dd($args)
 {

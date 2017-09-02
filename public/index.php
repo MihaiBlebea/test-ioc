@@ -6,14 +6,15 @@ require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 use Framework\App as Frame;
 use Framework\Injectables\Injector;
 
-
-Taranpula::gethere();
-
 $frame = new Frame();
+
 $frame->boot();
 //$frame->run();
+
+$con = Injector::resolve("Connector");
+
 $frame->init();
 
 $test = $frame->testApp();
-$car = Injector::resolve("Car");
+
 //dd($car);

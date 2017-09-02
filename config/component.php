@@ -2,15 +2,20 @@
 
 return [
     "components" => [
-        "Car" => "TestIoc\Components\CarComponent",
-        "House" => "TestIoc\Components\HouseComponent",
-        "Whoops" => "Framework\Injectables\WhoopsComponent",
-        "Login" => "Framework\Injectables\LoginComponent",
 
-        "Router" => "Framework\Injectables\RouterComponent"
+        "ConfigManager" => "Framework\Injectables\ConfigManagerComponent",
+        "Whoops"        => "Framework\Injectables\WhoopsComponent",
+        "Login"         => "Framework\Injectables\LoginComponent",
+        "Connector"     => "Framework\Injectables\ConnectorComponent",
+
+        "House"         => "TestIoc\Components\HouseComponent",
+        "Router"        => "Framework\Injectables\RouterComponent"
+
     ],
 
     "facades" => [
-        "Car" => "Framework\Interfaces\CarComponent",
+
+        "LoginC" => "Framework\Facades\LoginFacade",
+        
     ]
 ];
