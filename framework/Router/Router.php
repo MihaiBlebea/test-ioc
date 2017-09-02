@@ -26,7 +26,7 @@ class Router
         }
     }
 
-    private function goTo(array $options = array())
+    public function goTo(array $options = array())
     {
         if (isset($options["controller"]))
         {
@@ -40,6 +40,7 @@ class Router
         {
             $this->setParams($options["params"]);
         }
+        $this->run();
     }
 
     protected function parseUri()

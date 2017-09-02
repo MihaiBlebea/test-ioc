@@ -3,6 +3,8 @@
 namespace TestIoc\Controllers;
 
 use Framework\Injectables\Injector;
+use Framework\Facades\RouterFacade;
+use Framework\Facades\LoginFacade;
 
 class IndexController
 {
@@ -20,5 +22,13 @@ class IndexController
         $login = Injector::resolve('Login');
         $login->logUser('ceva');
         echo $login->getLoggedUser();
+    }
+
+    public function facade()
+    {
+        //$router = Injector::resolve("Router");
+        //return $router->goTo(["controller" => "Index", "action" => "index"]);
+        //RouterFacade::goTo(["controller" => "Index", "action" => "index"]);
+        dd(LoginFacade::isLogin());
     }
 }
