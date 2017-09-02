@@ -2,8 +2,12 @@
 
 return [
     "components" => [
-        "Framework\Components\CarComponent",
-        "Framework\Components\HouseComponent",
+        "Car" => "TestIoc\Components\CarComponent",
+        "House" => "TestIoc\Components\HouseComponent",
+        "Whoops" => "Framework\Injectables\WhoopsComponent",
+        "Login" => "Framework\Injectables\LoginComponent",
+
+        "Router" => "Framework\Injectables\RouterComponent"
     ],
 
     "facades" => [

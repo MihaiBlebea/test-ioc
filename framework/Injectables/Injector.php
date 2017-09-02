@@ -1,10 +1,10 @@
 <?php
 
-namespace Framework;
+namespace Framework\Injectables;
 
 use Closure;
 
-class InjectionContainer
+class Injector
 {
     private static $registry = array();
 

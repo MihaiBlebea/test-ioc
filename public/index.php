@@ -3,18 +3,14 @@
 require_once('helpers.php');
 require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 
-use TestIoc\Go;
 use Framework\App as Frame;
-use Framework\InjectionContainer;
+use Framework\Injectables\Injector;
 
 $frame = new Frame();
 $frame->boot();
+//$frame->run();
+$frame->init();
 
-/*
-$inj = new InjectionContainer;
-$car = $inj->resolve('car');
-dd($car);
-*/
-
-$go = new Go();
-$go->view();
+$test = $frame->testApp();
+$car = Injector::resolve("Car");
+//dd($car);
