@@ -6,6 +6,10 @@ use Framework\Injectables\Injector;
 use Framework\Facades\RouterFacade;
 use Framework\Facades\LoginFacade;
 use TestIoc\Models\User;
+use TestIoc\Managers\ChangePasswordManager;
+use TestIoc\Emails\HelloEmail;
+use Framework\Factory\EmailFactory;
+use Framework\Templates\TemplateEngine;
 
 class IndexController
 {
@@ -74,5 +78,26 @@ class IndexController
     {
         $user = new User();
         $user = $user->where("id", ">", 4)->delete();
+    }
+
+    public function manager()
+    {
+        $manager = new ChangePasswordManager();
+        $manager->run();
+    }
+
+    public function email()
+    {
+        //$email = new HelloEmail();
+        //$email->send();
+
+        $email = EmailFactory::build("HelloEmail");
+        $email->send();
+    }
+
+    public function smarty()
+    {
+        $template = TemplateEngine::Instance();
+        dd($template->secret);
     }
 }

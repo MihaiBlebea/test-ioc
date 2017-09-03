@@ -255,9 +255,11 @@ class Model {
         return $statement = $this->connector->prepare("DELETE FROM " . $this->getTable() . " WHERE " . $this->schema)->execute();
     }
 
+    /*
     public static function __callStatic($name, $arguments)
     {
         $class = get_called_class();
         call_user_func_array(array(new $class(), $name), $arguments);
     }
+    */
 }

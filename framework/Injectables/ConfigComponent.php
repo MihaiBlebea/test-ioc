@@ -4,14 +4,14 @@ namespace Framework\Injectables;
 
 use Framework\Injectables\Injector;
 use Framework\Interfaces\ComponentInterface;
-use Framework\Configs\ConfigManager;
+use Framework\Configs\Config;
 
-class ConfigManagerComponent extends Injector implements ComponentInterface
+class ConfigComponent extends Injector implements ComponentInterface
 {
     public function boot()
     {
-        self::register('ConfigManager', function() {
-            $config = new ConfigManager();
+        self::register('Config', function() {
+            $config = new Config();
             return $config;
         });
     }

@@ -2,7 +2,7 @@
 
 namespace Framework\Configs;
 
-class ConfigManager
+class Config
 {
     private $configArray = array();
 
