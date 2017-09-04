@@ -10,6 +10,8 @@ use TestIoc\Managers\ChangePasswordManager;
 use TestIoc\Emails\HelloEmail;
 use Framework\Factory\EmailFactory;
 use Framework\Templates\TemplateEngine;
+use Framework\Alias\Template;
+use Framework\Alias\Request;
 
 class IndexController
 {
@@ -99,5 +101,28 @@ class IndexController
     {
         $template = TemplateEngine::Instance();
         dd($template->secret);
+    }
+
+    public function alias()
+    {
+        /*
+        $smarty = Injector::resolve("Template");
+        $smarty->assign([
+            "error" => true
+        ]);
+        $smarty->display("error.tpl");
+        */
+
+        Template::setAssign([
+            "error" => true
+        ])->setDisplay("error.tpl");
+
+        //dd($test);
+    }
+
+    public function request(Request $request, $foo, $bar)
+    {
+        dd($request);
+        //Request::retrive($data);
     }
 }

@@ -15,10 +15,22 @@ class Injector
 
     public static function resolve($name)
     {
-        if (self::registered($name) )
+        if(self::registered($name))
         {
             $name = self::$registry[$name];
             return $name();
+        }
+        throw new \Exception("No class or method found. [InjectionContainer => resolve()]");
+    }
+
+    public function resolveNamespace($namespace)
+    {
+        foreach($registry as $index => $value)
+        {
+            if($namespace == $value)
+            {
+                dd('ceva');
+            }
         }
         throw new \Exception("No class or method found. [InjectionContainer => resolve()]");
     }

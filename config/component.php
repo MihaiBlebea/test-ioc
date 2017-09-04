@@ -4,6 +4,7 @@ return [
     "components" => [
 
         "Config"    => "Framework\Injectables\ConfigComponent",
+        "Request"   => "Framework\Injectables\RequestComponent",
         "Template"  => "Framework\Injectables\TemplateComponent",
         "Whoops"    => "Framework\Injectables\WhoopsComponent",
         "Login"     => "Framework\Injectables\LoginComponent",
@@ -15,9 +16,11 @@ return [
 
     ],
 
-    "facades" => [
+    "alias" => [
 
-        "LoginC" => "Framework\Facades\LoginFacade",
+        "Request"  => Framework\Router\Request::class,
+        "Router"   => Framework\Router\Router::class,
+        "Template" => Framework\Templates\TemplateEngine::class,
 
     ]
 ];

@@ -40,7 +40,7 @@ class App
         }
     }
 
-    public function autoloadFacades()
+    public function autoloadAlias()
     {
 
 

@@ -2,9 +2,9 @@
 
 namespace Framework\Alias;
 
-use App\App;
+use Framework\Injectables\Injector;
 
-class Facade
+class Alias
 {
     /**
      * Store the namespace received from called Facade.
@@ -32,6 +32,11 @@ class Facade
     private static $calledClass;
 
     /**
+     * The class name extracted from alias array
+     */
+    private static $aliasIndex;
+
+    /**
      * The method who process and call the alias class
      */
     public static function init($namespace, $name, $arguments)
@@ -40,10 +45,11 @@ class Facade
         self::$name = $name;
         self::$arguments = $arguments;
 
-        $classShort = self::getClassNameFromNamespace();
+        $aliasIndex = self::getClassNameFromNamespace();
         self::$alias = self::injectConfig();
+        self::$aliasIndex = $aliasIndex;
 
-        self::$calledClass = self::$alias[$classShort];
+        self::$calledClass = self::$alias[self::$aliasIndex];
 
         if(isset(self::$calledClass))
         {
@@ -69,17 +75,16 @@ class Facade
      */
     public static function injectConfig()
     {
-        $app = new App();
-        return $app->alias;;
+        $config = Injector::resolve("Config");
+        return $config->getConfig('component')['alias'];
     }
 
     /**
-     * Extract the short class name from namespace
+     * Call the method and return to the Alias
      */
     public static function callMethod($reflection)
     {
-        $newClass = new self::$calledClass();
-        $method = $reflection->getMethod(self::$name);
-        return call_user_func_array(array($newClass, $method->name), self::$arguments);
+        $newClass = Injector::resolve(self::$aliasIndex);
+        return call_user_func_array(array($newClass, self::$name), self::$arguments);
     }
 }

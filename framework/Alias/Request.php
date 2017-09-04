@@ -2,9 +2,10 @@
 
 namespace Framework\Alias;
 
-use Framework\Alias\Facade;
+use Framework\Alias\Alias;
+use Framework\Interfaces\AliasInterface;
 
-class Car extends Facade
+class Request extends Alias implements AliasInterface
 {
     public static function __callStatic($name, $arguments)
     {

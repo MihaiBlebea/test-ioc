@@ -11,6 +11,7 @@ class TemplateEngine extends \Smarty
 {
     private $config;
     private $login;
+    private $globalVariables;
 
     public function __construct(Config $config, Login $login)
     {
@@ -34,7 +35,18 @@ class TemplateEngine extends \Smarty
     public function assignGlobalVariables()
     {
         $this->assign([
-
+            "app_name" => $this->config->getConfig("application")["app_name"],
         ]);
+    }
+
+    public function setAssign(array $values)
+    {
+        $this->assign($values);
+        return $this;
+    }
+
+    public function setDisplay($template)
+    {
+        $this->display($template);
     }
 }

@@ -18,7 +18,7 @@ class Config
 
     public function getAllConfigs()
     {
-        return $this->configArray();
+        return $this->configArray;
     }
 
     public function getConfig($file)
