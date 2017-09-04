@@ -80,7 +80,6 @@ class Facade
     {
         $newClass = new self::$calledClass();
         $method = $reflection->getMethod(self::$name);
-
         return call_user_func_array(array($newClass, $method->name), self::$arguments);
     }
 }
