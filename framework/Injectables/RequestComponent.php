@@ -18,6 +18,6 @@ class RequestComponent extends Injector implements ComponentInterface
 
     public function run($instance)
     {
-
+    
     }
 }

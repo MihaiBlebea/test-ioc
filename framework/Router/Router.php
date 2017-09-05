@@ -2,137 +2,127 @@
 
 namespace Framework\Router;
 
-use Framework\Router\GateKeeper;
-use Framework\Router\Request;
-
 class Router
 {
-    const DEFAULT_CONTROLLER = "Index";
-    const DEFAULT_ACTION     = "index";
+    private $request;
 
-    protected $controller    = self::DEFAULT_CONTROLLER;
-    protected $action        = self::DEFAULT_ACTION;
-    protected $params        = array();
-    protected $request       = null;
+    private $getRoutes     = array();
 
-    public function __construct(array $options = array())
+    private $postRoutes    = array();
+
+    private $dinamicParams = array();
+
+    private $options       = array();
+
+    public function __construct(Request $request)
     {
-        if (empty($options))
-        {
-           $this->parseUri();
-        }
-        else {
-            $this->goTo($options);
-        }
+        $this->request = $request;
     }
 
-    public function goTo(array $options = array())
+    public function get($path, array $options)
     {
-        if (isset($options["controller"]))
-        {
-            $this->setController($options["controller"]);
-        }
-        if (isset($options["action"]))
-        {
-            $this->setAction($options["action"]);
-        }
-        if (isset($options["params"]))
-        {
-            $this->setParams($options["params"]);
-        }
-        $this->run();
+        return $this->getRoutes[$path] = $options;
     }
 
-    protected function parseUri()
+    public function post($path, array $options)
     {
-        $path = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
-        $path = ltrim(substr($_SERVER['REQUEST_URI'], strlen($path) - 1), '/');
+        return $this->postRoutes[$path] = $options;
+    }
 
-        $this->request = new Request;
-        $path = $this->request->checkMethod($path);
+    public function splitRoute($route)
+    {
+        return explode("/", $route);
+    }
 
-        @list($controller, $action, $params) = explode("/", $path, 3);
-
-        if (isset($controller) && $controller !== "")
+    public function compare()
+    {
+        if($this->request->getMethod() == "GET")
         {
-            $this->setController($controller);
+            $localArray = $this->getRoutes;
+        } elseif ($this->request->getMethod() == "POST") {
+            $localArray = $this->postRoutes;
         } else {
-            $this->setController($this->controller);
+            throw new Exception("Error Processing Routes Method", 1);
         }
 
-        if (isset($action))
+        if($this->compareArrays($localArray) !== true)
         {
-            $this->setAction($action);
-        } else {
-            $this->setAction($this->action);
-        }
-
-        if (isset($params))
-        {
-            $this->setParams(explode("/", $params));
-        }
-    }
-
-    public function setController($controller)
-    {
-        if($controller !== "" || $controller !== null)
-        {
-            $controller = 'TestIoc\Controllers\\' . ucfirst(strtolower($controller)) . "Controller";
-            if (class_exists($controller))
+            if($this->compareStrings($localArray) !== true)
             {
-                $this->controller = $controller;
+                $this->callNotFound();
             } else {
-                $this->controller = 'TestIoc\Controllers\\' . self::DEFAULT_CONTROLLER . "Controller";
+                $this->callFoundInString();
             }
-        }
-        return $this;
-    }
-
-    public function setAction($action)
-    {
-        $action = $this->isCamelCase($action);
-
-        $reflector = new \ReflectionClass($this->controller);
-        if (!$reflector->hasMethod($action))
-        {
-            $action = self::DEFAULT_ACTION;
-        }
-        $this->action = $action;
-        return $this;
-    }
-
-    public function setParams(array $params)
-    {
-        $this->params = $params;
-        return $this;
-    }
-
-    public function isCamelCase($action)
-    {
-        if(strpos($action, "-") == true)
-        {
-            $camelCaseAction = "";
-            $actions = explode("-", $action);
-            foreach($actions as $index => $item)
-            {
-                if($index < 1)
-                {
-                    $camelCaseAction .= $item;
-                } elseif ($index > 0) {
-                    $camelCaseAction .= ucfirst($item);
-                }
-            }
-            return $camelCaseAction;
         } else {
-            return $action;
+            $this->callFoundInArray();
         }
     }
 
-    public function run()
+    public function compareArrays($localArray)
     {
-        GateKeeper::check($this->controller, $this->params);
+        foreach($localArray as $key => $options)
+        {
+            $local    = $this->splitRoute($key);
+            $incoming = $this->request->getArray();
 
-        array_push($this->params, $this->request);
-        call_user_func_array(array(new $this->controller, $this->action), $this->params);
+            if(count($local) == count($incoming))
+            {
+                for($i = 0; $i < count($local); $i++)
+                {
+                    if($local[$i] !== $incoming[$i])
+                    {
+                        if(strpos($local[$i], ':') !== false)
+                        {
+                            $j = ltrim($local[$i], ':');
+                            $this->dinamicParams[$j] = $incoming[$i];
+                        } else {
+                            continue 2;
+                        }
+                    }
+                }
+                $this->options = $options;
+                return true;
+                break;
+            }
+        }
+    }
+
+    public function compareStrings($localArray)
+    {
+        foreach($localArray as $key => $options)
+        {
+            if($key == $this->request->getTrimmedUrl())
+            {
+                $this->options = $options;
+                return true;
+            }
+        }
+    }
+
+    public function callNotFound()
+    {
+        dd("404");
+    }
+
+    public function callFoundInArray()
+    {
+        //dd("found with arrays");
+        $this->callMethod($this->request, $this->options);
+    }
+
+    public function callFoundInString()
+    {
+        //dd("found with strings");
+        $this->callMethod($this->request, $this->options);
+    }
+
+    public function callMethod(Request $request, $options)
+    {
+        dd($options);
+
+         $namespace = '\InstaRouter\Controllers\\' . $route['class'];
+         $class = new $namespace();
+
+         call_user_func(array($class, $route['function']), array($route['request'], $this->dynamicParams));
     }
 }

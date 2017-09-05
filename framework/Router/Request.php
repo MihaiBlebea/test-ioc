@@ -2,33 +2,66 @@
 
 namespace Framework\Router;
 
+use Exception;
+
 class Request
 {
-    private $payload = array();
+    private $fullUrl;
 
-    public function checkMethod($path)
+    private $method;
+
+    private $payload;
+
+    private $trimmedUrl;
+
+    private $urlAsArray = array();
+
+    private $elements;
+
+    public function __construct()
     {
-        $method = $_SERVER['REQUEST_METHOD'];
-        if($method === 'GET')
+        $this->fullUrl = $this->getUrl();
+
+        // Check if request is GET OR POST
+        $this->method = $this->checkRequestMethod();
+
+        // Save DATA from Request
+        if($this->method == "GET")
         {
-            $payload = $this->get($method);
-        } elseif($method === 'POST') {
-            $payload = $this->post($method);
+            $this->payload = $this->get();
+        } elseif ($this->method == "POST") {
+            $this->payload->post();
+        } else {
+            throw new Exception("Error Processing Request", 1);
         }
 
-        $this->payload = $payload;
+        // Parse Full url and cut query
+        $this->trimmedUrl = explode('?', $this->fullUrl)[0];
 
-        $path = $this->trimPath($path);
-        return $path;
+        // Explode URL and save in array
+        $this->urlAsArray = $this->explodeUrl($this->trimmedUrl);
+
+        // Calculate elements count
+        $this->elements = $this->countElements($this->urlAsArray);
+
     }
 
-    public function get($method)
+    public function getUrl()
     {
-        $payload = $_GET;
-        return $payload;
+        return ltrim(substr($_SERVER['REQUEST_URI'], strlen(implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/') - 1), '/');
     }
 
-    public function post($method)
+    public function checkRequestMethod()
+    {
+        return $_SERVER['REQUEST_METHOD'];
+    }
+
+    public function get()
+    {
+        return $_GET;
+    }
+
+    public function post()
     {
         $payload = $_POST;
         if(empty($payload))
@@ -39,12 +72,17 @@ class Request
         return $payload;
     }
 
-    public function trimPath($path)
+    public function explodeUrl($url)
     {
-        return explode('?', $path)[0];
+        return $items = explode("/", $url);
     }
 
-    public function retrive($element)
+    public function countElements(array $elements)
+    {
+        return count($elements);
+    }
+
+    public function out($element)
     {
         if(array_key_exists($element, $this->payload))
         {
@@ -52,7 +90,22 @@ class Request
         }
     }
 
-    public function retriveAll()
+    public function getTrimmedUrl()
+    {
+        return $this->trimmedUrl;
+    }
+
+    public function getArray()
+    {
+        return $this->urlAsArray;
+    }
+
+    public function getMethod()
+    {
+        return$this->method;
+    }
+
+    public function getAllPayload()
     {
         return $this->payload;
     }
