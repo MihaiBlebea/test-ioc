@@ -14,19 +14,62 @@ class Router
 
     private $options       = array();
 
+    private $lastRoute;
+
+    private $lastMethod;
+
     public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
-    public function get($path, array $options)
+    public function get($path, $controller)
     {
-        return $this->getRoutes[$path] = $options;
+        $this->lastMethod = "GET";
+        $this->lastRoute = $path;
+        $this->getRoutes[$path]["controller"] = $controller;
+        return $this;
     }
 
-    public function post($path, array $options)
+    public function post($path, $controller)
     {
-        return $this->postRoutes[$path] = $options;
+        $this->lastMethod = "POST";
+        $this->lastRoute = $path;
+        $this->postRoutes[$path]["controller"] = $controller;
+        return $this;
+    }
+
+    public function as($name)
+    {
+        if($this->lastMethod == "GET")
+        {
+            $this->getRoutes[$this->lastRoute]["name"] = $name;
+        } elseif($this->lastMethod == "POST") {
+            $this->postRoutes[$this->lastRoute]["name"] = $name;
+        }
+        return $this;
+    }
+
+    public function bind(array $binds)
+    {
+        if($this->lastMethod == "GET")
+        {
+            $this->getRoutes[$this->lastRoute]["binds"] = $binds;
+        } elseif($this->lastMethod == "POST") {
+            $this->postRoutes[$this->lastRoute]["binds"] = $binds;
+        }
+        return $this;
+    }
+
+    public function rules(array $rules)
+    {
+        if($this->lastMethod == "GET")
+        {
+            $this->getRoutes[$this->lastRoute]["rules"] = $rules;
+        } elseif($this->lastMethod == "POST") {
+            $this->postRoutes[$this->lastRoute]["rules"] = $rules;
+        }
+        return $this;
     }
 
     public function splitRoute($route)

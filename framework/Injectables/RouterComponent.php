@@ -20,7 +20,13 @@ class RouterComponent extends Injector implements ComponentInterface
 
     public function run($instance)
     {
-        $instance->get("ceva/:id/:masina", ["option1" => "ceva", "option2" => "altceva"]);
+        $instance->get("ceva/:id/:user", "TestIoc\\Controllers\\IndexController")->as("Serban")->bind([
+            "id"   => "Client",
+            "user" => "User"
+        ])->rules([
+            "admin" => "TestIoc\\Rules\\AdminRule"
+        ]);
+        
         $instance->get("ceva/:masina/:foo/ceva4", ["option1" => "ceva", "option2" => "altceva"]);
         $instance->post("cevas", ["option1" => "Blebea", "option2" => "altceva"]);
         $instance->get("cevas", ["option1" => "Serban", "option2" => "altceva"]);
