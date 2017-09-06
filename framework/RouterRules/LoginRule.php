@@ -4,23 +4,20 @@ namespace Framework\RouterRules;
 
 use Framework\Interfaces\RouterRuleInterface;
 use Framework\Injectables\Injector;
+use Framework\RouterRules\Rule;
 
-class LoginRule implements RouterRuleInterface
+class LoginRule extends Rule implements RouterRuleInterface
 {
     public static function apply($params = null)
     {
-        $login = Injector::resolve("Login");
-        if($login)
+        if(true)
         {
-            return true;
-        } else {
-            self::fail();
+            $this->next();
         }
     }
 
     public static function fail()
     {
-        $router = Injector::resolve("Router");
-        $router->goTo(["controller" => "Index", "action" => "index"]);
+        dd("failed rule");
     }
 }

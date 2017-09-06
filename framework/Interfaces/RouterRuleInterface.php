@@ -7,8 +7,8 @@ namespace Framework\Interfaces;
  */
 interface RouterRuleInterface
 {
-    public static function apply($params = null);
+    public function apply();
 
-    public static function fail();
+    public function fail();
 
 }

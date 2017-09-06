@@ -6,7 +6,7 @@ use Framework\Interfaces\RouterRuleInterface;
 use Framework\Injectables\Injector;
 use Framework\RouterRules\Rule;
 
-class AdminRule extends Rule implements RouterRuleInterface
+class MembershipRule extends Rule implements RouterRuleInterface
 {
     public function apply()
     {
@@ -19,6 +19,6 @@ class AdminRule extends Rule implements RouterRuleInterface
 
     public function fail()
     {
-        dd("Rule Admin not passed");
+        dd("Rule Membership not passed");
     }
 }

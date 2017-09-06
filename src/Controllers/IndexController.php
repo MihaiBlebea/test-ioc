@@ -15,10 +15,9 @@ use Framework\Alias\Request;
 
 class IndexController
 {
-    public function index()
+    public function index($user)
     {
-        $house = Injector::resolve("House");
-        echo $house->address;
+        dd($user);
     }
 
     public function login()

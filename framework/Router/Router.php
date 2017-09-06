@@ -2,25 +2,37 @@
 
 namespace Framework\Router;
 
+use Framework\Sessions\PreviousPathSession;
+use Framework\Router\GateKeeper;
+use Framework\Router\Binder;
+use Framework\Configs\Config;
+
 class Router
 {
     private $request;
 
-    private $getRoutes     = array();
+    private $session;
 
-    private $postRoutes    = array();
+    private $getRoutes        = array();
 
-    private $dinamicParams = array();
+    private $postRoutes       = array();
 
-    private $options       = array();
+    private $dinamicParams    = array();
+
+    private $options          = array();
 
     private $lastRoute;
 
     private $lastMethod;
 
-    public function __construct(Request $request)
+    private $hasDinamicParams = false;
+
+    public function __construct(Request $request, PreviousPathSession $session, Config $config)
     {
         $this->request = $request;
+        $this->session = $session;
+        $this->config  = $config;
+        $session->setContent($request->getTrimmedUrl());
     }
 
     public function get($path, $controller)
@@ -39,36 +51,31 @@ class Router
         return $this;
     }
 
-    public function as($name)
+    private function checkMethod($data, $key)
     {
         if($this->lastMethod == "GET")
         {
-            $this->getRoutes[$this->lastRoute]["name"] = $name;
+            $this->getRoutes[$this->lastRoute][$key] = $data;
         } elseif($this->lastMethod == "POST") {
-            $this->postRoutes[$this->lastRoute]["name"] = $name;
+            $this->postRoutes[$this->lastRoute][$key] = $data;
         }
+    }
+
+    public function as($name)
+    {
+        $this->checkMethod($name, "name");
         return $this;
     }
 
     public function bind(array $binds)
     {
-        if($this->lastMethod == "GET")
-        {
-            $this->getRoutes[$this->lastRoute]["binds"] = $binds;
-        } elseif($this->lastMethod == "POST") {
-            $this->postRoutes[$this->lastRoute]["binds"] = $binds;
-        }
+        $this->checkMethod($binds, "binds");
         return $this;
     }
 
     public function rules(array $rules)
     {
-        if($this->lastMethod == "GET")
-        {
-            $this->getRoutes[$this->lastRoute]["rules"] = $rules;
-        } elseif($this->lastMethod == "POST") {
-            $this->postRoutes[$this->lastRoute]["rules"] = $rules;
-        }
+        $this->checkMethod($rules, "rules");
         return $this;
     }
 
@@ -116,8 +123,8 @@ class Router
                     {
                         if(strpos($local[$i], ':') !== false)
                         {
-                            $j = ltrim($local[$i], ':');
-                            $this->dinamicParams[$j] = $incoming[$i];
+                            $id = ltrim($local[$i], ':');
+                            $this->dinamicParams[$i] = ["id" => $id, "param" => $incoming[$i]];
                         } else {
                             continue 2;
                         }
@@ -149,23 +156,36 @@ class Router
 
     public function callFoundInArray()
     {
-        //dd("found with arrays");
-        $this->callMethod($this->request, $this->options);
+        $this->hasDinamicParams = true;
+        $this->beforeController($this->request, $this->options);
     }
 
     public function callFoundInString()
     {
-        //dd("found with strings");
-        $this->callMethod($this->request, $this->options);
+        $this->beforeController($this->request, $this->options);
     }
 
-    public function callMethod(Request $request, $options)
+    public function beforeController(Request $request, $options)
     {
-        dd($options);
+        // Call Rules and see if they are valid
+        if(GateKeeper::call($options["rules"]))
+        {
+            if($this->hasDinamicParams == true)
+            {
+                //Also check if the models were not found in the database
+                $models = Binder::bind($this->dinamicParams, $options["binds"]);
+            }
+        }
+        return $this->callController($models);
+    }
 
-         $namespace = '\InstaRouter\Controllers\\' . $route['class'];
-         $class = new $namespace();
+    public function callController($models)
+    {
+        $result = explode("@", $this->options["controller"]);
+        $class = $result[0];
+        $method = $result[1];
+        $class = new $class();
 
-         call_user_func(array($class, $route['function']), array($route['request'], $this->dynamicParams));
+        call_user_func(array($class, $method), array($models));
     }
 }
