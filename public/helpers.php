@@ -3,7 +3,7 @@
 // Die and dump function
 function dd($args)
 {
-    echo json_encode($args, JSON_PRETTY_PRINT);
+    echo '<pre>'; echo json_encode($args, JSON_PRETTY_PRINT); echo '</pre>';
     die();
 }
 

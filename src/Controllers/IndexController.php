@@ -12,6 +12,8 @@ use Framework\Factory\EmailFactory;
 use Framework\Templates\TemplateEngine;
 use Framework\Alias\Template;
 use Framework\Alias\Request;
+use Framework\Factory\EventFactory;
+use Framework\Factory\ListenerFactory;
 
 class IndexController
 {
@@ -123,5 +125,13 @@ class IndexController
     {
         dd($request);
         //Request::retrive($data);
+    }
+
+    public function events())
+    {
+        $event    = EventFactory::build("Error");
+        $listenerEmail = ListenerFactory::build("Email");
+        $listenerLog = ListenerFactory::build("Log");
+        $event->attach($listenerEmail, $listenerLog)->trigger("Serban");
     }
 }
