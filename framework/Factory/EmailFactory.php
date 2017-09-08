@@ -2,9 +2,10 @@
 
 namespace Framework\Factory;
 
+use Framework\Interfaces\FactoryInterface;
 use Framework\Injectables\Injector;
 
-class EmailFactory
+class EmailFactory implements FactoryInterface
 {
     private static $namespace;
 
@@ -15,16 +16,21 @@ class EmailFactory
         static::$namespace = $config["email_namespace"];
     }
 
-    public static function build($email)
+    public static function build($type, $path = "")
     {
         static::init();
 
-        if($email == "")
+        if($path == "")
+        {
+            $className = static::$namespace . ucfirst($type);
+        } else {
+            $className = "Framework\\Emails\\" . ucfirst($type);
+        }
+
+        if($type == "")
         {
             throw new \Exception('No email found');
         } else {
-            $className = static::$namespace . ucfirst($email);
-
             if(class_exists($className))
             {
                 return new $className();
@@ -33,4 +39,5 @@ class EmailFactory
             }
         }
     }
+
 }

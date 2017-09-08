@@ -2,21 +2,31 @@
 
 namespace Framework\Log;
 
+use Exceptions;
+
 class Logger
 {
-    private static $filePath = "/";
+    private static $filePath =  __LOG_PATH__;
     private static $fileName = "text.txt";
+
+    public static function test()
+    {
+        dd("test error");
+    }
 
     public static function log($txt)
     {
-        $txt = $txt . "\\n";
-        $file = self::checkOrCreateFile();
+        $date = date("Y-m-d");
+
+        $txt = $txt . "\n";
+        $file = self::checkOrCreateFile(self::$filePath . $date . "_" . self::$fileName);
+        
         fwrite($file, $txt);
-        fclose($myfile);
+        fclose($file);
     }
 
-    public static function checkOrCreateFile()
+    public static function checkOrCreateFile($file)
     {
-        return fopen(self::$filePath . self::$fileName, "w") or die("Unable to open log file.");
+        return fopen($file, "a");
     }
 }

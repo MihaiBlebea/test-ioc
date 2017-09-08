@@ -4,5 +4,5 @@ namespace Framework\Interfaces;
 
 interface EmailInterface
 {
-    public function send();
+    public static function send($payload);
 }

@@ -2,28 +2,41 @@
 
 namespace Framework\Factory;
 
-class SessionFactory
-{
-    private $path;
+use Framework\Interfaces\FactoryInterface;
+use Exception;
+use Framework\Injectables\Injector;
 
-    public function __construct($path)
+class SessionFactory implements FactoryInterface
+{
+    private static $namespace;
+
+    public static function init()
     {
-        $this->path = $path;
+        $config = Injector::resolve("Config");
+        $config = $config->getConfig("application");
+        static::$namespace = $config["session_namespace"];
     }
 
-    public function build($type = "")
+    public static function build($type = "", $path = "")
     {
+        static::init();
+
+        if($path == "")
+        {
+            $className = static::$namespace . ucfirst($type) . "Session";
+        } else {
+            $className = "Framework\\Sessions\\" . ucfirst($type) . "Session";
+        }
+
         if($type == "")
         {
-            throw new \Exception('No session type supplied');
+            throw new Exception('No session type supplied');
         } else {
-            $className = $this->path . ucfirst($type) . "Session";
-
             if(class_exists($className))
             {
                 return new $className();
             } else {
-                throw new \Exception('Session class not found.');
+                throw new Exception($className . "class not found.");
             }
         }
     }

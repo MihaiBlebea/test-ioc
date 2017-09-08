@@ -2,23 +2,37 @@
 
 namespace Framework\Factory;
 
+use Framework\Interfaces\FactoryInterface;
 use Exception;
 use Config;
 use Framework\Injectables\Injector;
 
-class EventFactory
+class EventFactory implements FactoryInterface
 {
-    public static function build($type = "")
+    private static $namespace;
+
+    public static function init()
     {
         $config = Injector::resolve("Config");
         $config = $config->getConfig("application");
+        static::$namespace = $config["event_namespace"];
+    }
+
+    public static function build($type = "", $path = "")
+    {
+        static::init();
+
+        if($path == "")
+        {
+            $className = static::$namespace . ucfirst($type) . "Event";
+        } else {
+            $className = "Framework\\Events\\" . ucfirst($type) . "Event";
+        }
 
         if($type == "")
         {
              throw new Exception('No type given');
         } else {
-            $className = $config["event_namespace"] . ucfirst($type) . "Event";
-
             if(class_exists($className))
             {
                 return new $className();

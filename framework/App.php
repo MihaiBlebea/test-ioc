@@ -3,6 +3,9 @@
 namespace Framework;
 
 use Framework\Injectables\Injector;
+use Framework\Log\Logger;
+use Framework\Factory\EventFactory;
+use Framework\Factory\ListenerFactory;
 
 class App
 {
@@ -40,10 +43,17 @@ class App
         }
     }
 
-    public function autoloadAlias()
+    public function setErrorHandler($errno, $errstr, $errfile, $errline)
     {
+        $time = date("Y-m-d H:i:s");
+        $message = $time . ": Error name => " . $errno . " Error message => " . $errstr . " in file " . $errfile . " line " . $errline;
 
+        $emailListener = ListenerFactory::build("EmailErrorToAdmin", "framework");
+        $logListener = ListenerFactory::build("LogError", "framework");
+        $event = EventFactory::build("Error", "framework");
+        $event->attach($emailListener)->attach($logListener)->trigger($message);
 
+        //Check if fatal error and die
     }
 
     public function testApp()

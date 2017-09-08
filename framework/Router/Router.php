@@ -61,21 +61,30 @@ class Router
         }
     }
 
-    public function as($name)
+    public function as($name = "")
     {
-        $this->checkMethod($name, "name");
+        if($name !== "")
+        {
+            $this->checkMethod($name, "name");
+        }
         return $this;
     }
 
-    public function bind(array $binds)
+    public function bind(array $binds = [])
     {
-        $this->checkMethod($binds, "binds");
+        if($binds !== [])
+        {
+            $this->checkMethod($binds, "binds");
+        }
         return $this;
     }
 
-    public function rules(array $rules)
+    public function rules(array $rules = [])
     {
-        $this->checkMethod($rules, "rules");
+        if($rules !== [])
+        {
+            $this->checkMethod($rules, "rules");
+        }
         return $this;
     }
 
@@ -168,24 +177,30 @@ class Router
     public function beforeController(Request $request, $options)
     {
         // Call Rules and see if they are valid
-        if(GateKeeper::call($options["rules"]))
+        if(isset($options["rules"]))
+        {
+            $rules = GateKeeper::call($options["rules"]);
+        }
+
+        if(isset($rules))
         {
             if($this->hasDinamicParams == true)
             {
                 //Also check if the models were not found in the database
                 $models = Binder::bind($this->dinamicParams, $options["binds"]);
+                return $this->callController($models);
             }
         }
-        return $this->callController($models);
+        return $this->callController();
     }
 
-    public function callController($models)
+    public function callController($models = "")
     {
         $result = explode("@", $this->options["controller"]);
         $class = $result[0];
         $method = $result[1];
         $class = new $class();
-
-        call_user_func(array($class, $method), array($models));
+        //dd(gettype($models[0]));
+        call_user_func_array(array($class, $method), $models);
     }
 }

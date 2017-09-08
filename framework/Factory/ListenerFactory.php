@@ -2,23 +2,37 @@
 
 namespace Framework\Factory;
 
+use Framework\Interfaces\FactoryInterface;
 use Exception;
 use Config;
 use Framework\Injectables\Injector;
 
-class ListenerFactory
+class ListenerFactory implements FactoryInterface
 {
-    public static function build($type = "")
+    private static $namespace;
+
+    public static function init()
     {
         $config = Injector::resolve("Config");
         $config = $config->getConfig("application");
+        static::$namespace = $config["listener_namespace"];
+    }
+
+    public static function build($type = "", $path = "")
+    {
+        static::init();
+
+        if($path == "")
+        {
+            $className = static::$namespace . ucfirst($type) . "Listener";
+        } else {
+            $className = "Framework\\Listeners\\" . ucfirst($type) . "Listener";
+        }
 
         if($type == "")
         {
              throw new Exception('No type given');
         } else {
-            $className = $config["listener_namespace"] . ucfirst($type) . "Listener";
-
             if(class_exists($className))
             {
                 return new $className();

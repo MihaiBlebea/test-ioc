@@ -13,8 +13,7 @@ class LoginComponent extends Injector implements ComponentInterface
     public function boot()
     {
         self::register('Login', function() {
-            $session = new SessionFactory("Framework\\Sessions\\");
-            $session = $session->build("username");
+            $session = SessionFactory::build("username", "framework");
             $login = new Login($session);
             return $login;
         });

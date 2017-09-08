@@ -16,8 +16,7 @@ class TemplateComponent extends Injector implements ComponentInterface
     {
         self::register('Template', function() {
             $config = new Config();
-            $session = new SessionFactory("Framework\\Sessions\\");
-            $session = $session->build("username");
+            $session = SessionFactory::build("Username", "framework");
             $login = new Login($session);
             $template = new TemplateEngine($config, $login);
             return $template;

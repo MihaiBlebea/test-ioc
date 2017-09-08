@@ -17,7 +17,7 @@ use Framework\Factory\ListenerFactory;
 
 class IndexController
 {
-    public function index($user)
+    public function index(User $user, User $user2)
     {
         dd($user);
     }
@@ -41,9 +41,10 @@ class IndexController
 
     public function select()
     {
+        //tt();
         $user = new User();
         $user = $user->where("id", ">", 1)->selectOne();
-        dd($user);
+        dd($user->generatePassword(8));
         //$users = $user->where("id", ">", "0")->select();
         //$users = $user->sortBy("first_name", "DESC")->selectAll();
 
@@ -127,7 +128,7 @@ class IndexController
         //Request::retrive($data);
     }
 
-    public function events())
+    public function events()
     {
         $event    = EventFactory::build("Error");
         $listenerEmail = ListenerFactory::build("Email");
