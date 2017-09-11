@@ -11,6 +11,7 @@ return [
         "Login"     => "Framework\Injectables\LoginComponent",
         "Connector" => "Framework\Injectables\ConnectorComponent",
         "Email"     => "Framework\Injectables\EmailComponent",
+        "Payment"   => "Framework\Injectables\PaymentComponent",
 
         "House"     => "TestIoc\Components\HouseComponent",
         "Router"    => "Framework\Injectables\RouterComponent"
@@ -22,6 +23,7 @@ return [
         "Request"  => Framework\Router\Request::class,
         "Router"   => Framework\Router\Router::class,
         "Template" => Framework\Templates\TemplateEngine::class,
+        "Payment"  => Framework\Payments\Payment::class,
 
     ]
 ];

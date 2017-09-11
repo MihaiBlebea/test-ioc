@@ -25,8 +25,10 @@ class ListenerFactory implements FactoryInterface
         if($path == "")
         {
             $className = static::$namespace . ucfirst($type) . "Listener";
-        } else {
+        } elseif($path == "framework"){
             $className = "Framework\\Listeners\\" . ucfirst($type) . "Listener";
+        } else {
+            throw new Exception("Unknown path to factory", 1);
         }
 
         if($type == "")

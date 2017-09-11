@@ -14,8 +14,10 @@ use Framework\Templates\TemplateEngine;
 use Framework\Alias\Template;
 use Framework\Alias\Request;
 use Framework\Alias\Router;
+use Framework\Alias\Payment;
 use Framework\Factory\EventFactory;
 use Framework\Factory\ListenerFactory;
+use Framework\Managers\ErrorRaportManager;
 
 class IndexController
 {
@@ -145,5 +147,19 @@ class IndexController
         $listenerEmail = ListenerFactory::build("Email");
         $listenerLog = ListenerFactory::build("Log");
         $event->attach($listenerEmail, $listenerLog)->trigger("Serban");
+    }
+
+    public function payment()
+    {
+        $token = Payment::generateToken();
+        echo $token;
+        /*
+        $event = EventFactory::build("error");
+        $listenerLog = ListenerFactory::build("logError","framework");
+        $listenerEmail = ListenerFactory::build("EmailErrorToAdmin","framework");
+        $event->attach($listenerLog)->attach($listenerEmail)->trigger($token);
+        */
+        $manager = new ErrorRaportManager;
+        $manager->run($token);
     }
 }

@@ -53,11 +53,7 @@ class Alias
 
         if(isset(self::$calledClass))
         {
-            $reflection = new \ReflectionClass(self::$calledClass);
-            if($reflection->hasMethod($name))
-            {
-                return self::callMethod($reflection);
-            }
+            return self::callMethod();
         }
     }
 
@@ -82,7 +78,7 @@ class Alias
     /**
      * Call the method and return to the Alias
      */
-    public static function callMethod($reflection)
+    public static function callMethod()
     {
         $newClass = Injector::resolve(self::$aliasIndex);
         return call_user_func_array(array($newClass, self::$name), self::$arguments);

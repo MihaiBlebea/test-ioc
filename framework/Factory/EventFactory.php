@@ -25,8 +25,10 @@ class EventFactory implements FactoryInterface
         if($path == "")
         {
             $className = static::$namespace . ucfirst($type) . "Event";
-        } else {
+        } elseif($path == "framework"){
             $className = "Framework\\Events\\" . ucfirst($type) . "Event";
+        } else {
+            throw new Exception("Unknown path to factory", 1);
         }
 
         if($type == "")

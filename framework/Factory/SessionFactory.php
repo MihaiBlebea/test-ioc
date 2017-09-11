@@ -24,8 +24,10 @@ class SessionFactory implements FactoryInterface
         if($path == "")
         {
             $className = static::$namespace . ucfirst($type) . "Session";
-        } else {
+        } elseif($path == "framework"){
             $className = "Framework\\Sessions\\" . ucfirst($type) . "Session";
+        } else {
+            throw new Exception("Unknown path to factory", 1);
         }
 
         if($type == "")
