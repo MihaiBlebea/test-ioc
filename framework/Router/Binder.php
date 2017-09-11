@@ -3,6 +3,7 @@
 namespace Framework\Router;
 
 use Framework\Injectables\Injector;
+use Exception;
 
 class Binder
 {
@@ -15,30 +16,50 @@ class Binder
         $config = Injector::resolve("Config");
         self::$namespace = $config->getConfig("application")["model_namespace"];
 
-        self::$params = array_values($params);
+        $modelsParams = self::combineParamsWithModels($params, $models);
 
         $result = array();
-        foreach($models as $index => $model)
+        foreach($modelsParams as $model)
         {
-            if(self::resolveBind($index, $model) !== false)
-            {
-                array_push($result, self::resolveBind($index, $model));
-            }
+            array_push($result, self::resolveBind($model));
         }
         return $result;
     }
 
-    private static function resolveBind($index, $model)
+    private static function combineParamsWithModels(array $params, array $models)
     {
-        $class = self::$namespace . $model;
+        if(count($params) == count($models))
+        {
+            $result = array();
+            foreach($params as $index => $param)
+            {
+                $param["model"] = $models[$param["id"]];
+                array_push($result, $param);
+            }
+            return $result;
+        } else {
+            throw new Exception("Params array do not have the same number of elements as Models array", 1);
+        }
+    }
+
+    private static function resolveBind(array $model)
+    {
+        $class = self::$namespace . $model["model"];
         $class = new $class();
 
-        $found = $class->where(self::$params[$index]["id"], "=", self::$params[$index]["param"])->selectOne();
+        if(isset($class->tableKey))
+        {
+            $key = $class->tableKey;
+        } else {
+            $key = "id";
+        }
+
+        $found = $class->where($key, "=", $model["param"])->selectOne();
         if($found !== false)
         {
             return $found;
         } else {
-            return self::$params[$index]["param"];
+            throw new Exception("Model not found in database", 1);
         }
     }
 }

@@ -3,9 +3,12 @@
 namespace Framework\Router;
 
 use Exception;
+use Framework\Sessions\PreviousPathSession;
 
 class Request
 {
+    private $session;
+
     private $fullUrl;
 
     private $method;
@@ -18,8 +21,10 @@ class Request
 
     private $elements;
 
-    public function __construct()
+    public function __construct(PreviousPathSession $session)
     {
+        $this->session = $session;
+
         $this->fullUrl = $this->getUrl();
 
         // Check if request is GET OR POST
@@ -43,7 +48,6 @@ class Request
 
         // Calculate elements count
         $this->elements = $this->countElements($this->urlAsArray);
-
     }
 
     public function getUrl()
@@ -108,5 +112,10 @@ class Request
     public function getAllPayload()
     {
         return $this->payload;
+    }
+
+    public function getPreviousPath()
+    {
+        return $this->session->getContent();
     }
 }

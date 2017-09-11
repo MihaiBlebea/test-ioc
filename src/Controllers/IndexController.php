@@ -6,18 +6,20 @@ use Framework\Injectables\Injector;
 use Framework\Facades\RouterFacade;
 use Framework\Facades\LoginFacade;
 use TestIoc\Models\User;
+use TestIoc\Models\Program;
 use TestIoc\Managers\ChangePasswordManager;
 use TestIoc\Emails\HelloEmail;
 use Framework\Factory\EmailFactory;
 use Framework\Templates\TemplateEngine;
 use Framework\Alias\Template;
 use Framework\Alias\Request;
+use Framework\Alias\Router;
 use Framework\Factory\EventFactory;
 use Framework\Factory\ListenerFactory;
 
 class IndexController
 {
-    public function index(User $user, User $user2)
+    public function index(User $user, Program $program)
     {
         dd($user);
     }
@@ -31,12 +33,11 @@ class IndexController
 
     public function facade()
     {
-        //$router = Injector::resolve("Router");
-        //return $router->goTo(["controller" => "Index", "action" => "index"]);
-        //RouterFacade::goTo(["controller" => "Index", "action" => "index"]);
-        //dd(LoginFacade::isLogin());
+        Router::goToName("users")->with([
+                "user"    => 1,
+                "program" => 1
+            ]);
 
-        LoginC::gethere();
     }
 
     public function select()
@@ -44,11 +45,18 @@ class IndexController
         //tt();
         $user = new User();
         $user = $user->where("id", ">", 1)->selectOne();
-        dd($user->generatePassword(8));
-        //$users = $user->where("id", ">", "0")->select();
-        //$users = $user->sortBy("first_name", "DESC")->selectAll();
+        var_dump($user->generatePassword(8));
 
-        //$user->getClass();
+        /*
+        Router::goToName("users")->with([
+            "user"    => 1,
+            "program" => 1
+        ]);
+        */
+        $request = Injector::resolve("Request");
+        dd($request->getPreviousPath());
+
+        Router::navigateToUrl("/ceva/2/2");
 
     }
 
@@ -101,8 +109,11 @@ class IndexController
 
     public function smarty()
     {
-        $template = TemplateEngine::Instance();
-        dd($template->secret);
+        $request = Injector::resolve("Request");
+        dd($request->getPreviousPath());
+        Template::setAssign([
+            "error" => true
+        ])->setDisplay("error.tpl");
     }
 
     public function alias()

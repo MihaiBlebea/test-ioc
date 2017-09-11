@@ -7,6 +7,7 @@ use Framework\Models\Model;
 class User extends Model
 {
     protected $table = 'slabeste_clients';
+    public $tableKey = "id";
     public $id;
     public $regdate;
     public $first_name;

@@ -11,7 +11,9 @@ class Router
 {
     private $request;
 
-    private $session;
+    private $config;
+
+    private $routerPathFile   = array();
 
     private $getRoutes        = array();
 
@@ -21,20 +23,82 @@ class Router
 
     private $options          = array();
 
-    private $lastRoute;
-
     private $lastMethod;
 
     private $hasDinamicParams = false;
 
-    public function __construct(Request $request, PreviousPathSession $session, Config $config)
+    private $goTo;
+
+    public function __construct(Request $request, Config $config)
     {
         $this->request = $request;
-        $this->session = $session;
-        $this->config  = $config;
-        $session->setContent($request->getTrimmedUrl());
+        $this->config  = $config->getConfig("application");
     }
 
+    // Store router path and objects in different files
+    public function storeRouterFilePath($path)
+    {
+        array_push($this->routerPathFile, $path);
+    }
+
+    // Access the stored router files, like web.php, api.php, etc
+    public function getRouterPathFile()
+    {
+        foreach($this->routerPathFile as $routerFile)
+        {
+            include($routerFile);
+        }
+    }
+
+    // Specify a named root that you want to access
+    public function goToName($name)
+    {
+        foreach($this->getRoutes as $index => $routeOptions)
+        {
+            if($routeOptions["name"] == $name)
+            {
+                $this->goTo = $index;
+            }
+        }
+        return $this;
+    }
+
+    // Specify additional params for manual access route path
+    public function with(array $keys)
+    {
+        $params = $this->splitRoute($this->goTo);
+
+        foreach($params as $index => $param)
+        {
+            if(strpos($param, ":") !== false)
+            {
+                $params[$index] = $keys[ltrim($param, ":")];
+            }
+        }
+        $url = $this->concatParams($params);
+
+        $this->navigateToUrl($url);
+    }
+
+    // String together and build an url from different params
+    public function concatParams(array $params)
+    {
+        $result = "";
+        foreach($params as $param)
+        {
+            $result .= "/" . $param;
+        }
+        return $result;
+    }
+
+    // Redirect to a specific url
+    public function navigateToUrl($url)
+    {
+        header("Location: " . $this->config["app_path"] . $url);
+        die();
+    }
+
+    // Build and store all the GET routes
     public function get($path, $controller)
     {
         $this->lastMethod = "GET";
@@ -43,6 +107,7 @@ class Router
         return $this;
     }
 
+    // Build and store all the POST routes
     public function post($path, $controller)
     {
         $this->lastMethod = "POST";
@@ -51,6 +116,7 @@ class Router
         return $this;
     }
 
+    // CHeck if the request is GET or POST and save the info
     private function checkMethod($data, $key)
     {
         if($this->lastMethod == "GET")
@@ -61,6 +127,7 @@ class Router
         }
     }
 
+    // Specify a name for easy access your route
     public function as($name = "")
     {
         if($name !== "")
@@ -70,6 +137,7 @@ class Router
         return $this;
     }
 
+    // Specify what params and models to bind to the route, using route-model binding
     public function bind(array $binds = [])
     {
         if($binds !== [])
@@ -79,6 +147,7 @@ class Router
         return $this;
     }
 
+    // Specify middlewares for limiting access to specific urls
     public function rules(array $rules = [])
     {
         if($rules !== [])
@@ -88,11 +157,13 @@ class Router
         return $this;
     }
 
-    public function splitRoute($route)
+    // Split an url to it's bare params
+    private function splitRoute($route)
     {
         return explode("/", $route);
     }
 
+    // Start comparing different routes to the current request
     public function compare()
     {
         if($this->request->getMethod() == "GET")
@@ -117,7 +188,8 @@ class Router
         }
     }
 
-    public function compareArrays($localArray)
+    // Compare routes with request as ARRAYS (dinamic params)
+    private function compareArrays($localArray)
     {
         foreach($localArray as $key => $options)
         {
@@ -146,7 +218,8 @@ class Router
         }
     }
 
-    public function compareStrings($localArray)
+    // Compare routes with request as strings (NO dinamic params)
+    private function compareStrings($localArray)
     {
         foreach($localArray as $key => $options)
         {
@@ -158,23 +231,27 @@ class Router
         }
     }
 
-    public function callNotFound()
+    // Specify the 404 page
+    private function callNotFound()
     {
         dd("404");
     }
 
-    public function callFoundInArray()
+    // Found route in array comparision
+    private function callFoundInArray()
     {
         $this->hasDinamicParams = true;
         $this->beforeController($this->request, $this->options);
     }
 
-    public function callFoundInString()
+    // Found route by string comparision
+    private function callFoundInString()
     {
         $this->beforeController($this->request, $this->options);
     }
 
-    public function beforeController(Request $request, $options)
+    // Do all the necesary computetions here before calling the controller class
+    private function beforeController(Request $request, $options)
     {
         // Call Rules and see if they are valid
         if(isset($options["rules"]))
@@ -194,13 +271,18 @@ class Router
         return $this->callController();
     }
 
-    public function callController($models = "")
+    // Call the controller and pass the request with the specific params
+    private function callController($models = "")
     {
         $result = explode("@", $this->options["controller"]);
         $class = $result[0];
         $method = $result[1];
         $class = new $class();
-        //dd(gettype($models[0]));
+
+        if(gettype($models) !== "array")
+        {
+            $models = array($models);
+        }
         call_user_func_array(array($class, $method), $models);
     }
 }
