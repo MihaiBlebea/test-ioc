@@ -16,3 +16,5 @@ $this->get("select", "TestIoc\\Controllers\\IndexController@select")->as("serban
 $this->get("smarty", "TestIoc\\Controllers\\IndexController@smarty")->as("smarty");
 
 $this->get("payment", "TestIoc\\Controllers\\IndexController@payment")->as("pay");
+
+$this->get("request", "TestIoc\\Controllers\\IndexController@request")->as("request");

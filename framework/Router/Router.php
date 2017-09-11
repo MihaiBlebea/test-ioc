@@ -283,6 +283,12 @@ class Router
         {
             $models = array($models);
         }
+
+        if(null !== $this->request->getAllPayload())
+        {
+            array_unshift($models, $this->request);
+        }
+
         call_user_func_array(array($class, $method), $models);
     }
 }

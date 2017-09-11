@@ -12,8 +12,7 @@ class RequestComponent extends Injector implements ComponentInterface
     public function boot()
     {
         self::register('Request', function() {
-            $session = Injector::resolve("PreviousPathSession");
-            $request = new Request($session);
+            $request = new Request();
             return $request;
         });
     }

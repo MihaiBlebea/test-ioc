@@ -12,18 +12,30 @@ use TestIoc\Emails\HelloEmail;
 use Framework\Factory\EmailFactory;
 use Framework\Templates\TemplateEngine;
 use Framework\Alias\Template;
-use Framework\Alias\Request;
+use Framework\Alias\Request as AliasRequest;
 use Framework\Alias\Router;
 use Framework\Alias\Payment;
+use Framework\Alias\Validator;
 use Framework\Factory\EventFactory;
 use Framework\Factory\ListenerFactory;
 use Framework\Managers\ErrorRaportManager;
+use Framework\Router\Request;
 
 class IndexController
 {
     public function index(User $user, Program $program)
     {
-        dd($user);
+        $input = ["firstName" => "Se2rban",
+                  "age" => 27,
+                  "email" => "serbanBlebea@gmail.com"];
+
+        Validator::options(["ceva" => "altceva"])
+            ->validate([
+                $input["firstName"] => "char",
+                $input["age"] => "integer",
+                $input["email"] => "email"
+            ]);
+
     }
 
     public function login()
@@ -49,16 +61,20 @@ class IndexController
         $user = $user->where("id", ">", 1)->selectOne();
         var_dump($user->generatePassword(8));
 
+
         /*
         Router::goToName("users")->with([
             "user"    => 1,
             "program" => 1
         ]);
         */
+        /*
         $request = Injector::resolve("Request");
         dd($request->getPreviousPath());
 
         Router::navigateToUrl("/ceva/2/2");
+        */
+        dd(Request::getPreviousPath());
 
     }
 
@@ -135,10 +151,10 @@ class IndexController
         //dd($test);
     }
 
-    public function request(Request $request, $foo, $bar)
+    public function request(Request $request)
     {
-        dd($request);
-        //Request::retrive($data);
+        dd($request->getAllPayload());
+        //Validator::validateObj($request);
     }
 
     public function events()

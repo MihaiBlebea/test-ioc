@@ -4,7 +4,6 @@ return [
     "components" => [
 
         "Config"    => "Framework\Injectables\ConfigComponent",
-        "PreviousPathSession" => "Framework\Injectables\PreviousPathSessionComponent",
         "Request"   => "Framework\Injectables\RequestComponent",
         "Template"  => "Framework\Injectables\TemplateComponent",
         "Whoops"    => "Framework\Injectables\WhoopsComponent",
@@ -12,6 +11,7 @@ return [
         "Connector" => "Framework\Injectables\ConnectorComponent",
         "Email"     => "Framework\Injectables\EmailComponent",
         "Payment"   => "Framework\Injectables\PaymentComponent",
+        "Validator" => "Framework\Injectables\ValidatorComponent",
 
         "House"     => "TestIoc\Components\HouseComponent",
         "Router"    => "Framework\Injectables\RouterComponent"
@@ -20,10 +20,11 @@ return [
 
     "alias" => [
 
-        "Request"  => Framework\Router\Request::class,
-        "Router"   => Framework\Router\Router::class,
-        "Template" => Framework\Templates\TemplateEngine::class,
-        "Payment"  => Framework\Payments\Payment::class,
+        "Request"   => Framework\Router\Request::class,
+        "Router"    => Framework\Router\Router::class,
+        "Template"  => Framework\Templates\TemplateEngine::class,
+        "Payment"   => Framework\Payments\Payment::class,
+        "Validator" => Framework\Validators\Validator::class,
 
     ]
 ];

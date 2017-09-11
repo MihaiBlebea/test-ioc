@@ -36,6 +36,7 @@ class TemplateEngine extends \Smarty
     {
         $this->assign([
             "app_name" => $this->config->getConfig("application")["app_name"],
+            "app_path" => $this->config->getConfig("application")["app_path"],
         ]);
     }
 

@@ -13,7 +13,7 @@
                             <h6 class="card-subtitle mb-2 text-muted">Nu intra in panica,asta inseamna doar ca pagina pe care o cauti nu exista</h6>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <button type="button" class="btn btn-primary btn-lg">Vreau sa ajung acasa</button>
+                            <a href="{$app_path}/select"><button type="button" class="btn btn-primary btn-lg">Vreau sa ajung acasa</button></a>
                         </div>
                     {/if}
                 </div>

@@ -7,8 +7,6 @@ use Framework\Sessions\PreviousPathSession;
 
 class Request
 {
-    private $session;
-
     private $fullUrl;
 
     private $method;
@@ -21,10 +19,8 @@ class Request
 
     private $elements;
 
-    public function __construct(PreviousPathSession $session)
+    public function __construct()
     {
-        $this->session = $session;
-
         $this->fullUrl = $this->getUrl();
 
         // Check if request is GET OR POST
@@ -116,6 +112,6 @@ class Request
 
     public function getPreviousPath()
     {
-        return $this->session->getContent();
+        return $_SERVER['HTTP_REFERER'];
     }
 }
