@@ -13,17 +13,21 @@ class Router
 
     private $config;
 
-    private $routerPathFile   = array();
+    private $routerPathFile = array();
 
-    private $getRoutes        = array();
+    private $getRoutes      = array();
 
-    private $postRoutes       = array();
+    private $postRoutes     = array();
 
-    private $dinamicParams    = array();
+    private $dinamicParams  = array();
 
-    private $options          = array();
+    private $options        = array();
+
+    private $groups         = array();
 
     private $lastMethod;
+
+    private $lastRoute;
 
     private $hasDinamicParams = false;
 
@@ -114,6 +118,44 @@ class Router
         $this->lastRoute = $path;
         $this->postRoutes[$path]["controller"] = $controller;
         return $this;
+    }
+
+    public function group(array $array)
+    {
+        $this->groups[$array["name"]] = $array;
+    }
+
+    public function belongsTo($name)
+    {
+        if(array_key_exists($name, $this->groups))
+        {
+            if($this->lastMethod == "GET")
+            {
+                $this->getRoutes[$this->lastRoute]["rules"] = $this->groups[$name]["rules"];
+                if(array_key_exists("prefix", $this->groups[$name]))
+                {
+                    $prefix = $this->groups[$name]["prefix"];
+                    $routePayload = $this->getRoutes[$this->lastRoute];
+                    array_pop($this->getRoutes);
+                    $this->getRoutes[$prefix . "/" . $this->lastRoute] = $routePayload;
+                }
+
+            } elseif($this->lastMethod == "POST") {
+                $this->postRoutes[$this->lastRoute]["rules"] = $this->groups[$name]["rules"];
+                if(array_key_exists("prefix", $this->groups[$name]))
+                {
+                    $prefix = $this->groups[$name]["prefix"];
+                    $routePayload = $this->postRoutes[$this->lastRoute];
+                    array_pop($this->postRoutes);
+                    $this->postRoutes[$prefix . "/" . $this->lastRoute] = $routePayload;
+                }
+            } else {
+                throw new Exception("Could not find route", 1);
+            }
+        } else {
+            throw new Exception("Could not find name of route in groups. Please call the group function first", 1);
+        }
+        // dd($this->getRoutes);
     }
 
     // CHeck if the request is GET or POST and save the info
@@ -240,7 +282,10 @@ class Router
     // Found route in array comparision
     private function callFoundInArray()
     {
-        $this->hasDinamicParams = true;
+        if(array_key_exists("binds", $this->options))
+        {
+            $this->hasDinamicParams = true;
+        }
         $this->beforeController($this->request, $this->options);
     }
 
@@ -259,15 +304,13 @@ class Router
             $rules = GateKeeper::call($options["rules"]);
         }
 
-        if(isset($rules))
+        if($this->hasDinamicParams == true)
         {
-            if($this->hasDinamicParams == true)
-            {
-                //Also check if the models were not found in the database
-                $models = Binder::bind($this->dinamicParams, $options["binds"]);
-                return $this->callController($models);
-            }
+            //Also check if the models were not found in the database
+            $models = Binder::bind($this->dinamicParams, $options["binds"]);
+            return $this->callController($models);
         }
+
         return $this->callController();
     }
 

@@ -4,17 +4,23 @@ namespace Framework\Payments;
 
 use Framework\Interfaces\PaymentInterface;
 use Framework\Injectables\Injector;
+use Framework\Router\Request;
+use Framework\Events\EventFactory;
+use Framework\Listeners\ListenerFactory;
 use Braintree\Configuration;
 use Braintree\ClientToken;
 use Braintree\Transaction;
 use Braintree\Customer;
 use Braintree\Subscription;
+use Braintree\WebhookNotification;
 
 class BraintreePayment implements PaymentInterface
 {
     public $name = "Braintree";
 
     private $config;
+
+    private $notificationType;
 
     public function __construct()
     {
@@ -96,5 +102,40 @@ class BraintreePayment implements PaymentInterface
             }
             throw new Exception("Customer could not be created: " . $message, 1);
         }
+    }
+
+    public function webhook(Request $request)
+    {
+        $webhook = WebhookNotification::parse($request->out('bt_signature'),
+                                              $request->out('bt_payload'));
+        $this->notificationType = $webhook->kind;
+
+        if($this->notificationType == "subscription_charged_successfully")
+        {
+            $customer_id = $webhookNotification->subscription->transactions[0]->customerDetails->id;
+            $this->getUserFromSubscription($customer_id);
+        }
+
+        if($notification_type == "subscription_charged_unsuccessfully")
+        {
+
+        }
+    }
+
+    private function getUserFromSubscription($customer_id)
+    {
+        $customer = Customer::find($customer_id);
+
+        $username = $customer->customFields['username'];
+        $tag = $customer->customFields['plan_tag'];
+
+        $event = EventFactory::build("recursivePaymentSuccess", "framework");
+        $emailListener = ListenerFactory::build("EmailToAdminSuccessfullRecursivePayment");
+        $logListener = ListenerFactory::build("LogSuccessfullRecursivePayment");
+        $event->attach($emailListener)->attach($logListener)->trigger([
+            "type"        => "success",
+            "username"    => $username,
+            "program_tag" => $tag
+        ]);
     }
 }

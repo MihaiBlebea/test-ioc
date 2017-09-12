@@ -11,6 +11,13 @@ $this->get("ceva/:user/:program", "TestIoc\\Controllers\\IndexController@index")
          "MembershipRule" => "TestIoc\\Rules\\MembershipRule"
      ]);
 
+$this->group(["name" => "sexy",
+              "prefix" => "Cristina",
+              "rules" => ["LoginRule" => "TestIoc\\Rules\\AdminRule"]
+]);
+
+$this->get("sex", "TestIoc\\Controllers\\IndexController@select")->as("serban")->belongsTo("sexy");
+
 $this->get("select", "TestIoc\\Controllers\\IndexController@select")->as("serban");
 
 $this->get("smarty", "TestIoc\\Controllers\\IndexController@smarty")->as("smarty");

@@ -13,6 +13,7 @@ class ErrorRaportManager implements ManagerInterface
         $event         = $this->createEvent();
         $listenerLog   = $this->createLogListener();
         $listenerEmail = $this->createEmailListener();
+
         return $event->attach($listenerLog)->attach($listenerEmail)->trigger($payload);
     }
 

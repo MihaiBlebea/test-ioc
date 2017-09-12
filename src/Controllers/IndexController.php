@@ -20,6 +20,7 @@ use Framework\Factory\EventFactory;
 use Framework\Factory\ListenerFactory;
 use Framework\Managers\ErrorRaportManager;
 use Framework\Router\Request;
+use Carbon\Carbon;
 
 class IndexController
 {
@@ -74,7 +75,7 @@ class IndexController
 
         Router::navigateToUrl("/ceva/2/2");
         */
-        dd(Request::getPreviousPath());
+        dd(AliasRequest::getPreviousPath());
 
     }
 
@@ -157,7 +158,7 @@ class IndexController
             "name"  => "char",
             "email" => "char|email"
         ]);
-        var_dump($validate);
+        printf("Now: %s", Carbon::now());
     }
 
     public function events()
@@ -165,7 +166,7 @@ class IndexController
         $event    = EventFactory::build("Error");
         $listenerEmail = ListenerFactory::build("Email");
         $listenerLog = ListenerFactory::build("Log");
-        $event->attach($listenerEmail, $listenerLog)->trigger("Serban");
+        $event->attach($listenerEmail)->attach($listenerLog)->trigger("Serban");
     }
 
     public function payment()

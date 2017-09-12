@@ -3,13 +3,16 @@
 namespace Framework\Listeners;
 
 use Framework\Events\Subject;
-use Framework\Log\Logger;
+use Framework\Log\ErrorLogger;
 use Framework\Interfaces\ListenerInterface;
 
 class LogErrorListener implements ListenerInterface
 {
     public function listen(Subject $subject)
     {
-        Logger::log($subject->getPayload());
+        ErrorLogger::log([
+            "date" => $subject->getSendDate(),
+            "message" => $subject->getPayload()
+        ]);
     }
 }
