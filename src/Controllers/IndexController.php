@@ -153,8 +153,11 @@ class IndexController
 
     public function request(Request $request)
     {
-        dd($request->getAllPayload());
-        //Validator::validateObj($request);
+        $validate = Validator::validateRequest([
+            "name"  => "char",
+            "email" => "char|email"
+        ]);
+        var_dump($validate);
     }
 
     public function events()

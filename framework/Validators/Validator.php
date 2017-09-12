@@ -4,9 +4,14 @@ namespace Framework\Validators;
 
 use Framework\Factory\ValidatorFactory;
 use Framework\Router\Request;
+use Framework\Injectables\Injector;
 
 class Validator
 {
+    private $request;
+
+    private $options = null;
+
     public $errors = array();
 
     private $validators = [
@@ -22,20 +27,22 @@ class Validator
 
     public function options(array $options = [])
     {
+        $this->options = $options;
         return $this;
     }
 
     public function validate(array $payload)
     {
-        foreach($payload as $value => $rules)
+        foreach($payload as $key => $data)
         {
-            $rules = explode("|", $rules);
+            $rules = explode("|", $data["rules"]);
+
             foreach($rules as $rule)
             {
                 $validator = ValidatorFactory::build($rule);
-                if($validator->validate($value) == false)
+                if($validator->validate($data["value"]) == false)
                 {
-                    $this->errors[$rule] = $this->validators[$rule];
+                    $this->errors["error_" . $key] = $this->validators[$rule];
                     continue;
                 }
             }
@@ -43,14 +50,32 @@ class Validator
         $this->out();
     }
 
-    public function validteObj(Request $request)
+    public function validateRequest(array $rules)
     {
-        dd($request);
+        $result = array();
+
+        foreach($this->request->getAllPayload() as $index => $value)
+        {
+            if(array_key_exists($index, $rules))
+            {
+                $result[$index] = ["value" => $value, "rules" => $rules[$index]];
+            }
+        }
+
+        $this->validate($result);
     }
 
     public function out()
     {
-        dd($this->errors);
+        if($this->options["return"] !== null)
+        {
+            $template = Injector::resolve("Template");
+            $template->assign($this->request->getAllPayload());
+            $template->assign($this->errors);
+            $template->display($this->options["return"]);
+            die();
+        }
+
         return $this->errors;
     }
 }

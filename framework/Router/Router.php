@@ -279,12 +279,14 @@ class Router
         $method = $result[1];
         $class = new $class();
 
+        // Transform models in arrays
         if(gettype($models) !== "array")
         {
             $models = array($models);
         }
 
-        if(null !== $this->request->getAllPayload())
+        // Check if Request payload is empty and if not pass it to controller
+        if($this->request->getAllPayload() !== [])
         {
             array_unshift($models, $this->request);
         }
